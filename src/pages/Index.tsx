@@ -1,12 +1,18 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, Star, Users, Calendar, Heart, Shield, Award, Download } from "lucide-react";
+import { ChevronLeft, ChevronRight, Star, Users, Calendar, Heart, Shield, Award, Download, Smartphone } from "lucide-react";
 
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [scrollY, setScrollY] = useState(0);
+
+  const salonBackgrounds = [
+    "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1920&h=1080&fit=crop",
+    "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=1920&h=1080&fit=crop", 
+    "https://images.unsplash.com/photo-1581591524425-c7e0978865fc?w=1920&h=1080&fit=crop"
+  ];
 
   const phoneScreens = [
     {
@@ -15,7 +21,7 @@ const Index = () => {
       image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=600&fit=crop"
     },
     {
-      title: "Choose Services",
+      title: "Choose Services", 
       description: "Browse through various beauty services",
       image: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=300&h=600&fit=crop"
     },
@@ -36,7 +42,7 @@ const Index = () => {
     },
     {
       name: "Ravi Kumar",
-      location: "Delhi",
+      location: "Delhi", 
       rating: 5,
       text: "Amazing app! The AI suggestions helped me discover new services. Booking was seamless and the salon quality was excellent.",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face"
@@ -75,11 +81,22 @@ const Index = () => {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 5000);
 
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+
     return () => {
       clearInterval(slideInterval);
       clearInterval(testimonialInterval);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % phoneScreens.length);
@@ -96,48 +113,92 @@ const Index = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-[#F25435] to-red-500 rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold text-lg">N</span>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold bg-gradient-to-r from-[#F25435] to-red-600 bg-clip-text text-transparent">
                 Nearz-AI
               </span>
             </div>
-            <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
-              Download App
-            </Button>
+            <nav className="hidden md:flex items-center space-x-8">
+              <button onClick={() => scrollToSection('hero')} className="text-gray-700 hover:text-[#F25435] transition-colors">Home</button>
+              <button onClick={() => scrollToSection('app-showcase')} className="text-gray-700 hover:text-[#F25435] transition-colors">App</button>
+              <button onClick={() => scrollToSection('testimonials')} className="text-gray-700 hover:text-[#F25435] transition-colors">Reviews</button>
+              <button onClick={() => scrollToSection('partners')} className="text-gray-700 hover:text-[#F25435] transition-colors">Partners</button>
+              <Button className="bg-gradient-to-r from-[#F25435] to-red-500 hover:from-[#F25435]/90 hover:to-red-500/90 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+                BLOGS
+              </Button>
+            </nav>
           </div>
         </div>
       </header>
 
+      {/* Floating Download Widget - Desktop Only */}
+      <div className="hidden lg:block fixed bottom-8 right-8 z-50" style={{ transform: `translateY(${scrollY * 0.1}px)` }}>
+        <div className="bg-white rounded-2xl shadow-2xl p-4 border border-gray-200">
+          <div className="text-center">
+            <div className="w-20 h-20 mx-auto mb-3 bg-gray-100 rounded-xl flex items-center justify-center">
+              <img 
+                src="/lovable-uploads/4d089d3f-4a5e-4f86-ba99-9674b039d2ba.png" 
+                alt="Download QR Code" 
+                className="w-16 h-16 object-contain"
+              />
+            </div>
+            <p className="text-sm font-semibold text-gray-900 mb-1">Download Nearz</p>
+            <p className="text-xs text-gray-600">Scan QR Code</p>
+          </div>
+        </div>
+      </div>
+
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4">
-        <div className="container mx-auto text-center">
+      <section id="hero" className="pt-24 pb-16 px-4 relative overflow-hidden min-h-screen flex items-center">
+        {/* Background Slideshow */}
+        <div className="hero-background">
+          {salonBackgrounds.map((bg, index) => (
+            <img
+              key={index}
+              src={bg}
+              alt={`Salon background ${index + 1}`}
+              className="animate-slideshow"
+              style={{ 
+                animationDelay: `${index * 5}s`,
+                filter: 'brightness(0.3)'
+              }}
+            />
+          ))}
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
+        
+        <div className="container mx-auto text-center relative z-10">
           <div className="animate-fadeInUp">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-orange-600 via-red-500 to-pink-500 bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
+              <span className="bg-gradient-to-r from-[#F25435] via-orange-400 to-yellow-300 bg-clip-text text-transparent">
                 AI-Powered
               </span>
               <br />
-              <span className="text-gray-900">Salon Booking</span>
+              <span className="text-white">Salon Booking</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto leading-relaxed">
               Discover, book, and enjoy premium salon services with our intelligent AI recommendations. 
               Get exclusive discounts and seamless booking experience.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-4 rounded-full text-lg shadow-lg hover:shadow-xl transition-all duration-300 animate-float">
-                <Download className="mr-2 h-5 w-5" />
-                Download Free App
+              <Button className="bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-full text-lg shadow-lg hover:shadow-xl transition-all duration-300 animate-float">
+                <Smartphone className="mr-2 h-5 w-5" />
+                Download on App Store
               </Button>
-              <div className="flex items-center gap-2 text-gray-600">
-                <div className="flex text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-current" />
-                  ))}
-                </div>
-                <span>4.8/5 rating</span>
+              <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full text-lg shadow-lg hover:shadow-xl transition-all duration-300 animate-float">
+                <Download className="mr-2 h-5 w-5" />
+                Get it on Google Play
+              </Button>
+            </div>
+            <div className="flex justify-center items-center gap-2 text-gray-300 mb-12">
+              <div className="flex text-yellow-400">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-5 w-5 fill-current" />
+                ))}
               </div>
+              <span>4.8/5 rating</span>
             </div>
             
             {/* Stats */}
@@ -145,10 +206,10 @@ const Index = () => {
               {stats.map((stat, index) => (
                 <div key={index} className="text-center">
                   <div className="flex justify-center mb-2">
-                    <stat.icon className="h-8 w-8 text-orange-500" />
+                    <stat.icon className="h-8 w-8 text-[#F25435]" />
                   </div>
-                  <div className="text-3xl font-bold text-gray-900 mb-1">{stat.number}</div>
-                  <div className="text-gray-600">{stat.label}</div>
+                  <div className="text-3xl font-bold text-white mb-1">{stat.number}</div>
+                  <div className="text-gray-300">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -157,7 +218,7 @@ const Index = () => {
       </section>
 
       {/* App Showcase */}
-      <section className="py-20 bg-gradient-to-r from-orange-500 to-red-500">
+      <section id="app-showcase" className="py-20 bg-gradient-to-r from-[#F25435] to-red-500">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
@@ -262,43 +323,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* QR Code Download Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold text-white mb-8">
-            Download the App Now
-          </h2>
-          <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
-            Scan the QR code to download Nearz-AI and start your beauty journey today
-          </p>
-          
-          <div className="max-w-md mx-auto">
-            <div className="bg-white p-8 rounded-3xl shadow-2xl">
-              <div className="w-48 h-48 mx-auto mb-6 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <img 
-                  src="/lovable-uploads/4d089d3f-4a5e-4f86-ba99-9674b039d2ba.png" 
-                  alt="Download QR Code" 
-                  className="w-40 h-40 object-contain"
-                />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Scan to Download</h3>
-              <p className="text-gray-600 mb-6">Available on iOS and Android</p>
-              
-              <div className="flex justify-center space-x-4">
-                <div className="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium">
-                  App Store
-                </div>
-                <div className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium">
-                  Play Store
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Testimonials */}
-      <section className="py-20 bg-gradient-to-br from-orange-50 to-red-50">
+      <section id="testimonials" className="py-20 bg-gradient-to-br from-orange-50 to-red-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -357,7 +383,7 @@ const Index = () => {
       </section>
 
       {/* Partner Salons */}
-      <section className="py-20 bg-white overflow-hidden">
+      <section id="partners" className="py-20 bg-white overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -393,10 +419,10 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-[#F25435] to-red-500 rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-xl">N</span>
                 </div>
-                <span className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                <span className="text-3xl font-bold bg-gradient-to-r from-[#F25435] to-red-400 bg-clip-text text-transparent">
                   Nearz-AI
                 </span>
               </div>
