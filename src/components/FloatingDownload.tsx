@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 
 const FloatingDownload = () => {
@@ -11,21 +10,20 @@ const FloatingDownload = () => {
   }, []);
 
   return (
-    <div className="hidden lg:block fixed bottom-8 right-8 z-50" style={{ 
+    <div className="hidden lg:block fixed bottom-8 right-8 z-50" style={{
       transform: `translateY(${Math.min(scrollY * 0.05, 50)}px)`,
       transition: 'transform 0.1s ease-out'
     }}>
-      <div className="bg-white rounded-2xl shadow-2xl p-4 border border-gray-200 hover:shadow-3xl transition-shadow duration-300">
+      <div className="bg-white rounded-2xl shadow-2xl pt-5 border  hover:shadow-3xl hover:scale-110 transition-all duration-300 cursor-pointer">
         <div className="text-center">
-          <div className="w-20 h-20 mx-auto mb-3 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden">
-            <img 
-              src="/lovable-uploads/4d089d3f-4a5e-4f86-ba99-9674b039d2ba.png" 
-              alt="Download QR Code" 
-              className="w-16 h-16 object-contain"
+          <div className="w-[280px] h-36 mx-auto rounded-xl flex items-center justify-center overflow-hidden pl-2 pr-2">
+            <img
+              src="/NearzQR.png"
+              alt="QR Code"
+              className="w-[400px] h-[500px] object-contain hover:scale-105 transition-transform duration-300"
             />
           </div>
-          <p className="text-sm font-semibold text-gray-900 mb-1">Download Nearz</p>
-          <p className="text-xs text-gray-600">Scan QR Code</p>
+          <h3 className="text-base font-semibold text-gray-900">Scan to Download</h3>
         </div>
       </div>
     </div>

@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import AppShowcase from "@/components/AppShowcase";
@@ -7,6 +6,8 @@ import Partners from "@/components/Partners";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import FloatingDownload from "@/components/FloatingDownload";
+import Rating from "@/components/Rating"
+import VirtualTryOnSection from "@/components/VirtualTryOn";
 
 const Index = () => {
   const scrollToSection = (sectionId: string) => {
@@ -22,6 +23,8 @@ const Index = () => {
       <FloatingDownload />
       <HeroSection />
       <AppShowcase />
+      <VirtualTryOnSection/>
+      <Rating/>
       <Testimonials />
       <Partners />
       <ContactSection />
